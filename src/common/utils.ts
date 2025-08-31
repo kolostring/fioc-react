@@ -52,36 +52,32 @@ export function buildContainer(
 
       return buildContainer(newState);
     },
-    resolve(...args: [any, ...any[]]): any {
-      if (args.length === 1) {
-        const token = args[0];
+    resolve(consumer: DIConsumer<any, any, any> | DIToken<any>) {
+      if (typeof consumer === "symbol") {
+        const token = consumer;
+
         if (!(token in containerState))
           throw new Error(`Token Symbol(${token.description}) not found`);
-        return containerState[token] as any;
+        const state = containerState[token] as any;
+
+        if (!state.dependencies) {
+          return state;
+        }
+
+        return state.factory(
+          ...state.dependencies.map((dep: DIToken<any>) =>
+            diContainer.resolve(dep)
+          )
+        );
+      } else {
+        return consumer.factory(
+          ...consumer.dependencies.map((dep: DIToken<any>) =>
+            diContainer.resolve(dep)
+          )
+        );
       }
-
-      return args.map((token) => {
-        if (!(token in containerState))
-          throw new Error(`Token Symbol(${token.description}) not found`);
-        return containerState[token];
-      });
     },
-    resolveConsumer(token: DIToken<DIConsumer<any, any, any>> | DIToken<any>) {
-      if (!(token in containerState))
-        throw new Error(`Token Symbol(${token.description}) not found`);
-      const state = containerState[token] as any;
-
-      if (!state.dependencies) {
-        return state;
-      }
-
-      return state.factory(
-        ...state.dependencies.map((dep: DIToken<any>) =>
-          diContainer.resolveConsumer(dep)
-        )
-      );
-    },
-    resolveAll(): DIContainerState {
+    getState(): DIContainerState {
       return containerState;
     },
   };
@@ -106,7 +102,7 @@ export function buildManager(
     registerContainer(container: DIContainer, key: string = "default") {
       if (containers[key]) throw new Error(`Container ${key} already exists`);
       const newContainersState = produce(containers, (draft) => {
-        draft[key] = container.resolveAll();
+        draft[key] = container.getState();
         return draft;
       });
       return buildManager({ containers: newContainersState, currentContainer });

@@ -34,19 +34,11 @@ export type DIManagerState = {
 export interface DIContainer {
   register<T>(token: DIToken<T>, value: T): DIContainer;
   registerConsumer(value: DIConsumer<any, any>): DIContainer;
-  resolve<T>(token: DIToken<T>): T;
-  resolve<T extends readonly DIToken<any>[]>(
-    ...tokens: T
-  ): { [K in keyof T]: T[K] extends DIToken<infer R> ? R : never };
-  resolveConsumer<
-    Deps extends readonly any[],
-    Params extends any[],
-    Return = any
-  >(
-    token: DIToken<DIConsumer<Deps, Params, Return>>
+  resolve<Deps extends readonly any[], Params extends any[], Return = any>(
+    consumer: DIConsumer<Deps, Params, Return>
   ): (...params: Params) => Return;
-  resolveConsumer<T>(token: DIToken<T>): T;
-  resolveAll(): DIContainerState;
+  resolve<T>(token: DIToken<T>): T;
+  getState(): DIContainerState;
 }
 
 export interface DIManager {
