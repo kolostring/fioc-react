@@ -5,10 +5,31 @@ import {
   DIManager,
   DIManagerState,
   DIToken,
+  DIConsumer,
+  DIConsumerFactoryParams,
 } from "./types";
 
 export function createDIToken<T>(desc: string): DIToken<T> {
   return Symbol(desc) as DIToken<T>;
+}
+
+export function defineDIConsumer<
+  const Deps extends readonly DIToken<any>[],
+  Params extends any[],
+  Return = any
+>(def: {
+  dependencies: Deps;
+  factory: (
+    ...args: DIConsumerFactoryParams<Deps>
+  ) => (...params: Params) => Return;
+  description?: string;
+}): DIConsumer<Deps, Params, Return> {
+  return {
+    ...def,
+    token: createDIToken<DIConsumer<Deps, Params, Return>>(
+      def.description ?? "DIConsumer"
+    ),
+  };
 }
 
 export function buildContainer(
@@ -23,12 +44,20 @@ export function buildContainer(
 
       return buildContainer(newState);
     },
+    registerConsumer(value): DIContainer {
+      const newState = produce(containerState, (draft) => {
+        draft[value.token] = value;
+        return draft;
+      });
+
+      return buildContainer(newState);
+    },
     resolve(...args: [any, ...any[]]): any {
       if (args.length === 1) {
         const token = args[0];
         if (!(token in containerState))
           throw new Error(`Token Symbol(${token.description}) not found`);
-        return containerState[token];
+        return containerState[token] as any;
       }
 
       return args.map((token) => {
@@ -36,6 +65,21 @@ export function buildContainer(
           throw new Error(`Token Symbol(${token.description}) not found`);
         return containerState[token];
       });
+    },
+    resolveConsumer(token: DIToken<DIConsumer<any, any, any>> | DIToken<any>) {
+      if (!(token in containerState))
+        throw new Error(`Token Symbol(${token.description}) not found`);
+      const state = containerState[token] as any;
+
+      if (!state.dependencies) {
+        return state;
+      }
+
+      return state.factory(
+        ...state.dependencies.map((dep: DIToken<any>) =>
+          diContainer.resolveConsumer(dep)
+        )
+      );
     },
     resolveAll(): DIContainerState {
       return containerState;
