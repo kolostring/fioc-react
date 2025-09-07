@@ -1,12 +1,13 @@
 import { produce } from "immer";
 import {
-  DIContainer,
+  DIContainerBuilder,
   DIContainerState,
   DIManager,
   DIManagerState,
   DIToken,
   DIConsumer,
   DIConsumerFactoryParams,
+  DIContainer,
 } from "./types";
 
 export function createDIToken<T>(desc: string): DIToken<T> {
@@ -34,9 +35,9 @@ export function defineDIConsumer<
 
 export function buildContainer(
   containerState: DIContainerState = {}
-): DIContainer {
-  const diContainer: DIContainer = {
-    register<T>(token: DIToken<T>, value: T): DIContainer {
+): DIContainerBuilder {
+  const diContainer: DIContainerBuilder = {
+    register<T>(token: DIToken<T>, value: T): DIContainerBuilder {
       const newState = produce(containerState, (draft) => {
         draft[token] = value;
         return draft;
@@ -44,7 +45,7 @@ export function buildContainer(
 
       return buildContainer(newState);
     },
-    registerConsumer(value): DIContainer {
+    registerConsumer(value): DIContainerBuilder {
       const newState = produce(containerState, (draft) => {
         draft[value.token] = value;
         return draft;
@@ -52,33 +53,38 @@ export function buildContainer(
 
       return buildContainer(newState);
     },
-    resolve(consumer: DIConsumer<any, any, any> | DIToken<any>) {
-      if (typeof consumer === "symbol") {
-        const token = consumer;
 
-        if (!(token in containerState))
-          throw new Error(`Token Symbol(${token.description}) not found`);
-        const state = containerState[token] as any;
+    makeStatic(): DIContainer {
+      const diContainer: DIContainer = {
+        getState: () => containerState,
+        resolve: (consumer: DIConsumer<any, any, any> | DIToken<any>) => {
+          if (typeof consumer === "symbol") {
+            const token = consumer;
 
-        if (!state.dependencies) {
-          return state;
-        }
+            if (!(token in containerState))
+              throw new Error(`Token Symbol(${token.description}) not found`);
+            const state = containerState[token] as any;
 
-        return state.factory(
-          ...state.dependencies.map((dep: DIToken<any>) =>
-            diContainer.resolve(dep)
-          )
-        );
-      } else {
-        return consumer.factory(
-          ...consumer.dependencies.map((dep: DIToken<any>) =>
-            diContainer.resolve(dep)
-          )
-        );
-      }
-    },
-    getState(): DIContainerState {
-      return containerState;
+            if (!state.dependencies) {
+              return state;
+            }
+
+            return state.factory(
+              ...state.dependencies.map((dep: DIToken<any>) =>
+                diContainer.resolve(dep)
+              )
+            );
+          } else {
+            return consumer.factory(
+              ...consumer.dependencies.map((dep: DIToken<any>) =>
+                diContainer.resolve(dep)
+              )
+            );
+          }
+        },
+      };
+
+      return diContainer;
     },
   };
 
@@ -94,12 +100,12 @@ export function buildManager(
   const { containers, currentContainer } = containerManagerState;
 
   const diManager: DIManager = {
-    getContainer(key: string | undefined): DIContainer {
+    getContainer(key: string | undefined) {
       if (!containers[key ?? currentContainer])
         throw new Error("Container not found");
-      return buildContainer(containers[key ?? currentContainer]);
+      return buildContainer(containers[key ?? currentContainer]).makeStatic();
     },
-    registerContainer(container: DIContainer, key: string = "default") {
+    registerContainer(container, key: string = "default") {
       if (containers[key]) throw new Error(`Container ${key} already exists`);
       const newContainersState = produce(containers, (draft) => {
         draft[key] = container.getState();

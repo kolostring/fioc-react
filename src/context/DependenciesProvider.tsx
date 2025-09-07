@@ -1,5 +1,3 @@
-"use client";
-
 import { useMemo, useState } from "react";
 import { DIManager } from "../common/types";
 import { DependenciesContext } from "./DependenciesContext";

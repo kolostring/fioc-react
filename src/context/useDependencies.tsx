@@ -1,5 +1,3 @@
-"use client";
-
 import { useContext, useMemo } from "react";
 import { DependenciesContext } from "./DependenciesContext";
 import { buildManager } from "../common/utils";
@@ -11,7 +9,7 @@ export default function useDependencies(): DIManager {
 
   const { managerState, setManagerState } = ctx;
 
-  const diManager = useMemo(
+  const diManager: DIManager = useMemo(
     () => ({
       ...buildManager(managerState),
       setDefaultContainer: (key: string) => {
@@ -21,7 +19,7 @@ export default function useDependencies(): DIManager {
         return manager;
       },
     }),
-    [managerState]
+    [managerState, setManagerState]
   );
 
   return diManager;
