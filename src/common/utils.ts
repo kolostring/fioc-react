@@ -8,6 +8,8 @@ import {
   DIConsumer,
   DIConsumerFactoryParams,
   DIContainer,
+  DIConsumerDependencies,
+  DIConsumerParams,
 } from "./types";
 
 export function createDIToken<T>(desc: string): DIToken<T> {
@@ -15,9 +17,9 @@ export function createDIToken<T>(desc: string): DIToken<T> {
 }
 
 export function defineDIConsumer<
-  const Deps extends readonly DIToken<any>[],
-  Params extends any[],
-  Return = any
+  const Deps extends DIConsumerDependencies,
+  Params extends DIConsumerParams,
+  Return = unknown
 >(def: {
   dependencies: Deps;
   factory: (
@@ -57,26 +59,30 @@ export function buildContainer(
     makeStatic(): DIContainer {
       const diContainer: DIContainer = {
         getState: () => containerState,
-        resolve: (consumer: DIConsumer<any, any, any> | DIToken<any>) => {
+        resolve: (
+          consumer:
+            | DIConsumer<DIConsumerDependencies, DIConsumerParams, unknown>
+            | DIToken<unknown>
+        ) => {
           if (typeof consumer === "symbol") {
             const token = consumer;
 
             if (!(token in containerState))
               throw new Error(`Token Symbol(${token.description}) not found`);
-            const state = containerState[token] as any;
+            const state = containerState[token];
 
-            if (!state.dependencies) {
-              return state;
+            if (!(state as DIConsumer).dependencies) {
+              return state as () => unknown;
             }
 
-            return state.factory(
-              ...state.dependencies.map((dep: DIToken<any>) =>
-                diContainer.resolve(dep)
+            return (state as DIConsumer).factory(
+              ...(state as DIConsumer).dependencies.map(
+                (dep: DIToken<unknown>) => diContainer.resolve(dep)
               )
             );
           } else {
             return consumer.factory(
-              ...consumer.dependencies.map((dep: DIToken<any>) =>
+              ...consumer.dependencies.map((dep: DIToken<unknown>) =>
                 diContainer.resolve(dep)
               )
             );

@@ -1,18 +1,23 @@
 export type DIToken<T> = symbol & { __type: T };
 export type UnwrapToken<T> = T extends DIToken<infer U> ? U : never;
 
+export type DIConsumerDependencies = readonly DIToken<unknown>[];
+export type DIConsumerParams = unknown[];
+
 export type DIConsumerFactoryParams<Deps> = {
   [K in keyof Deps]: Deps[K] extends DIToken<infer U>
-    ? U extends DIConsumer<any, any>
-      ? ReturnType<U["factory"]>
+    ? U extends DIConsumer<infer Deps, infer Params, infer Return>
+      ? Deps extends never
+        ? never
+        : (...args: Params) => Return
       : U
     : never;
 };
 
 export type DIConsumer<
-  Deps extends readonly DIToken<any>[],
-  Params extends any[],
-  Return = any
+  Deps extends DIConsumerDependencies = DIConsumerDependencies,
+  Params extends DIConsumerParams = DIConsumerParams,
+  Return = unknown
 > = {
   token: DIToken<DIConsumer<Deps, Params, Return>>;
   dependencies: Deps;
@@ -21,10 +26,6 @@ export type DIConsumer<
   ) => (...params: Params) => Return;
 };
 
-export type DIConsumerReturn<T> = T extends DIConsumer<any, any, infer R>
-  ? R
-  : never;
-
 export type DIContainerState = Record<DIToken<unknown>, unknown>;
 export type DIManagerState = {
   containers: Record<string, DIContainerState>;
@@ -32,7 +33,11 @@ export type DIManagerState = {
 };
 
 export interface DIContainer {
-  resolve<Deps extends readonly any[], Params extends any[], Return = any>(
+  resolve<
+    Deps extends DIConsumerDependencies,
+    Params extends DIConsumerParams,
+    Return = unknown
+  >(
     consumer: DIConsumer<Deps, Params, Return>
   ): (...params: Params) => Return;
   resolve<T>(token: DIToken<T>): T;
@@ -41,7 +46,12 @@ export interface DIContainer {
 
 export interface DIContainerBuilder {
   register<T>(token: DIToken<T>, value: T): DIContainerBuilder;
-  registerConsumer(value: DIConsumer<any, any>): DIContainerBuilder;
+  registerConsumer<
+    Deps extends DIConsumerDependencies,
+    Params extends DIConsumerParams
+  >(
+    value: DIConsumer<Deps, Params>
+  ): DIContainerBuilder;
 
   makeStatic(): DIContainer;
 }
