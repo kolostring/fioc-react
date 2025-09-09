@@ -1,3 +1,7 @@
+/**
+ * This module provides utility functions for creating tokens, defining consumers,
+ * and building dependency injection containers and managers.
+ */
 import { produce } from "immer";
 import {
   DIContainerBuilder,
@@ -12,10 +16,27 @@ import {
   DIConsumerParams,
 } from "./types";
 
+/**
+ * Creates a Dependency Injection (DI) token.
+ * Tokens are unique symbols used to identify dependencies in the DI container carrying a type for casting purposes.
+ *
+ * @param desc - A description for the token, useful for debugging.
+ * @returns A unique symbol representing the DI token carrying a type for casting purposes.
+ */
 export function createDIToken<T>(desc: string): DIToken<T> {
   return Symbol(desc) as DIToken<T>;
 }
 
+/**
+ * Defines a Dependency Injection (DI) consumer.
+ * Consumers/Use Cases are function factories that depend on interfaces or other consumers.
+ *
+ * @param def - An object containing:
+ *   - `dependencies`: An array of tokens representing the dependencies.
+ *   - `factory`: A function that takes recursively resolved dependencies and returns the consumer function.
+ *   - `description`: An optional description for the consumer.
+ * @returns A DI consumer object with a unique token.
+ */
 export function defineDIConsumer<
   const Deps extends DIConsumerDependencies,
   Params extends DIConsumerParams,
@@ -35,6 +56,13 @@ export function defineDIConsumer<
   };
 }
 
+/**
+ * Builder of a Dependency Injection (DI) container.
+ * The container allows registering and resolving dependencies.
+ *
+ * @param containerState - The initial state of the container (optional).
+ * @returns A DI container builder for registering dependencies and creating a static container.
+ */
 export function buildContainer(
   containerState: DIContainerState = {}
 ): DIContainerBuilder {
@@ -55,7 +83,6 @@ export function buildContainer(
 
       return buildContainer(newState);
     },
-
     makeStatic(): DIContainer {
       const diContainer: DIContainer = {
         getState: () => containerState,
@@ -97,6 +124,13 @@ export function buildContainer(
   return diContainer;
 }
 
+/**
+ * Builds a Dependency Injection (DI) manager.
+ * The manager allows managing multiple containers and switching between them.
+ *
+ * @param containerManagerState - The initial state of the manager (optional).
+ * @returns A DI manager for managing containers and their states.
+ */
 export function buildManager(
   containerManagerState: DIManagerState = {
     containers: {},

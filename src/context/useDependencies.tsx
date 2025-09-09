@@ -1,3 +1,9 @@
+/**
+ * Hook to resolve dependencies from the Dependency Injection (DI) manager.
+ *
+ * @returns The DI manager instance for resolving dependencies.
+ * @throws An error if the `DependenciesProvider` is not found in the component tree.
+ */
 import { useContext, useMemo } from "react";
 import { DependenciesContext } from "./DependenciesContext";
 import { buildManager } from "../common/utils";
