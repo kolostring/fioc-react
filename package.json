@@ -1,31 +1,43 @@
 {
   "name": "fioc-react",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "react",
+    "library",
+    "npm"
+  ],
+  "description": "A React library for managing dependencies.",
+  "author": "kolostring <yoerodriguezjunior@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kolostring/fioc-react.git"
+  },
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "tsc",
+    "lint": "eslint ."
   },
   "dependencies": {
     "immer": "^10.1.1",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "vitest": "^3.2.4"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.1",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react-swc": "^4.0.0",
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
-    "vite": "^7.1.2"
+    "vitest": "^3.2.4"
   }
 }

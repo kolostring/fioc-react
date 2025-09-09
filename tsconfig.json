@@ -1,7 +1,13 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "lib": ["es2023", "dom"],
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "module": "es2022"
+  },
+  "include": ["src/**/*"],
+  "references": []
 }
