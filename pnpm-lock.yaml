@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      fioc:
+        specifier: ^1.0.3
+        version: 1.0.3(@types/node@24.3.1)(jsdom@26.1.0)
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -742,6 +745,9 @@ packages:
   find-up@5.0.0:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
+
+  fioc@1.0.3:
+    resolution: {integrity: sha512-C1OX2a+SJqpiLfNfWIaXv8ZEjmjANa22nYtkZmAJzdyiJlH/uPrrdrgv+SKDBHdGqAoqKd+pRMuHNTI95NtCPA==}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -1895,6 +1901,31 @@ snapshots:
     dependencies:
       locate-path: 6.0.0
       path-exists: 4.0.0
+
+  fioc@1.0.3(@types/node@24.3.1)(jsdom@26.1.0):
+    dependencies:
+      immer: 10.1.1
+      vitest: 3.2.4(@types/node@24.3.1)(jsdom@26.1.0)
+    transitivePeerDependencies:
+      - '@edge-runtime/vm'
+      - '@types/debug'
+      - '@types/node'
+      - '@vitest/browser'
+      - '@vitest/ui'
+      - happy-dom
+      - jiti
+      - jsdom
+      - less
+      - lightningcss
+      - msw
+      - sass
+      - sass-embedded
+      - stylus
+      - sugarss
+      - supports-color
+      - terser
+      - tsx
+      - yaml
 
   flat-cache@4.0.1:
     dependencies:

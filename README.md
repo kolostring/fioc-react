@@ -2,6 +2,8 @@
 
 FIOC-React (Functional Inversion Of Control - React) is a lightweight dependency injection library for React applications. It simplifies the management of dependencies in your React components by providing a flexible and type-safe way to define, register, and resolve dependencies, without the need of reflection, decorators or classes.
 
+Based on [FIOC](https://www.npmjs.com/package/fioc)
+
 ## Features
 
 - **Type-Safe Dependency Injection**: Define and resolve dependencies with full TypeScript support.

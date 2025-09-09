@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  buildContainer,
-  createDIToken,
-  defineDIConsumer,
-} from "../../common/utils";
+import { buildContainer, createDIToken, defineDIConsumer } from "fioc";
 
 interface RepoA {
   getFooA: () => string;

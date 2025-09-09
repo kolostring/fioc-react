@@ -3,11 +3,10 @@
     "declaration": true,
     "outDir": "dist",
     "jsx": "react-jsx",
-    "lib": ["es2023", "dom"],
-    "moduleResolution": "bundler",
-    "target": "ES2023",
-    "module": "es2022"
+    "lib": ["dom"],
+    "moduleResolution": "node",
+    "target": "es2020"
   },
   "include": ["src/**/*"],
-  "references": []
+  "exclude": ["src/__tests__"]
 }

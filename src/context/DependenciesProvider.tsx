@@ -3,7 +3,7 @@
  * It wraps the application and supplies the container manager to the React context.
  */
 import { useMemo, useState } from "react";
-import { DIManager } from "../common/types";
+import { DIManager } from "fioc";
 import { DependenciesContext } from "./DependenciesContext";
 
 /**

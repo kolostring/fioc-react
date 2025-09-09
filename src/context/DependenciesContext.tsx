@@ -3,7 +3,7 @@
  * It provides a way to access the container manager throughout the application.
  */
 import { createContext } from "react";
-import { DIManagerState } from "../common/types";
+import { DIManagerState } from "fioc";
 
 /**
  * React context for Dependency Injection (DI).

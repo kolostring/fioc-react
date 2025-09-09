@@ -1,2 +1,2 @@
-export * from "./common";
+export * from "fioc";
 export * from "./context";
