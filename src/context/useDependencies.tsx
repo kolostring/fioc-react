@@ -1,31 +1,26 @@
 /**
  * Hook to resolve dependencies from the Dependency Injection (DI) manager.
  *
- * @returns The DI manager instance for resolving dependencies.
+ * @param containerKey The key of the container to resolve dependencies from.
+ * @returns The DI Container instance for resolving dependencies.
  * @throws An error if the `DependenciesProvider` is not found in the component tree.
+ * @throws An error if the container is not found in the DI manager.
  */
-import { useContext, useMemo } from "react";
+import { useContext } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildManager, DIManager } from "fioc";
+import { buildContainer, DIContainer } from "fioc";
 
-export default function useDependencies(): DIManager {
+export default function useDependencies(containerKey?: string): DIContainer {
   const ctx = useContext(DependenciesContext);
   if (!ctx) throw new Error("Dependencies Provider not found");
 
-  const { managerState, setManagerState } = ctx;
+  const { managerState } = ctx;
 
-  const diManager: DIManager = useMemo(
-    () => ({
-      ...buildManager(managerState),
-      setDefaultContainer: (key: string) => {
-        const manager = buildManager(managerState).setDefaultContainer(key);
-        setManagerState(manager.getState());
+  if (managerState.containers[containerKey ?? "default"] === undefined) {
+    throw new Error(`Container ${containerKey ?? "default"} not found`);
+  }
 
-        return manager;
-      },
-    }),
-    [managerState, setManagerState]
-  );
-
-  return diManager;
+  return buildContainer(
+    managerState.containers[containerKey ?? "default"]
+  ).makeStatic();
 }
