@@ -8,7 +8,7 @@ import { useContext, useMemo } from "react";
 import { DependenciesContext } from "./DependenciesContext";
 import { buildDIContainerManager, DIManager } from "fioc";
 
-export default function useContainerManager(): DIManager {
+export function useContainerManager(): DIManager {
   const ctx = useContext(DependenciesContext);
   if (!ctx) throw new Error("Dependencies Provider not found");
 

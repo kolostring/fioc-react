@@ -14,7 +14,7 @@ import { DependenciesContext } from "./DependenciesContext";
  * @param manager - The DI manager instance to provide.
  * @returns A React component that provides the DI manager context.
  */
-export default function DependenciesProvider({
+export function DependenciesProvider({
   children,
   manager,
 }: {
