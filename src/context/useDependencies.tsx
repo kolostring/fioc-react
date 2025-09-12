@@ -8,7 +8,7 @@
  */
 import { useContext } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildContainer, DIContainer } from "fioc";
+import { buildDIContainer, DIContainer } from "fioc";
 
 export default function useDependencies(containerKey?: string): DIContainer {
   const ctx = useContext(DependenciesContext);
@@ -20,7 +20,7 @@ export default function useDependencies(containerKey?: string): DIContainer {
     throw new Error(`Container ${containerKey ?? "default"} not found`);
   }
 
-  return buildContainer(
+  return buildDIContainer(
     managerState.containers[containerKey ?? "default"]
-  ).makeStatic();
+  ).getResult();
 }

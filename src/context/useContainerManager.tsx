@@ -6,7 +6,7 @@
  */
 import { useContext, useMemo } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildManager, DIManager } from "fioc";
+import { buildDIContainerManager, DIManager } from "fioc";
 
 export default function useContainerManager(): DIManager {
   const ctx = useContext(DependenciesContext);
@@ -16,9 +16,11 @@ export default function useContainerManager(): DIManager {
 
   const diManager: DIManager = useMemo(
     () => ({
-      ...buildManager(managerState),
+      ...buildDIContainerManager(managerState).getResult(),
       setDefaultContainer: (key: string) => {
-        const manager = buildManager(managerState).setDefaultContainer(key);
+        const manager = buildDIContainerManager(managerState)
+          .getResult()
+          .setDefaultContainer(key);
         setManagerState(manager.getState());
 
         return manager;
