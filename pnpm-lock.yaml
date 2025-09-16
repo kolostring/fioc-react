@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       fioc:
-        specifier: ^1.2.2
-        version: 1.2.2
+        specifier: ^1.2.4
+        version: 1.2.4
       immer:
         specifier: ^10.1.1
         version: 10.1.1
@@ -746,8 +746,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  fioc@1.2.2:
-    resolution: {integrity: sha512-Og4sZM0QAlkcs70h5e/2+raWJthjFbsk/s6wpeRnuP/c+Q91+vUgdphg1XhNOnimX6YF9vinsUQOTW3fJB/bAA==}
+  fioc@1.2.4:
+    resolution: {integrity: sha512-wsUC+pYNi9fJ2DeUiZjkWe6sxrgCfa2wghx+HCo2H+yeEHQ6EY9pJYtNlEpRUGblt0NU+TxK7tu67nNiEbtG7w==}
 
   flat-cache@4.0.1:
     resolution: {integrity: sha512-f7ccFPK3SXFHpx15UIGyRJ/FJQctuKZ0zVuN3frBo4HnK3cay9VEW0R6yPYFHC0AgqhukPzKjq22t5DmAyqGyw==}
@@ -1902,7 +1902,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  fioc@1.2.2:
+  fioc@1.2.4:
     dependencies:
       immer: 10.1.1
 
