@@ -8,9 +8,11 @@
  */
 import { useContext } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildDIContainer, DIContainer } from "fioc";
+import { buildDIContainer, DIContainer, DIContainerState } from "fioc";
 
-export function useDependencies(containerKey?: string): DIContainer {
+export function useDependencies(
+  containerKey?: string
+): DIContainer<DIContainerState> {
   const ctx = useContext(DependenciesContext);
   if (!ctx) throw new Error("Dependencies Provider not found");
 
