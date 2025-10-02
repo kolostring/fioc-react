@@ -5,7 +5,7 @@
     "module": "esnext", // let tsup bundle formats
     "moduleResolution": "bundler",
     "declaration": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "outDir": "dist",
     "strict": true,
     "skipLibCheck": true
