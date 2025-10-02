@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2020", // modern enough for Node 14+
-    "lib": ["es2020", "dom"], // safe baseline (no es2023 leaks in d.ts)
-    "module": "esnext", // let tsup bundle formats
-    "moduleResolution": "bundler",
     "declaration": true,
-    "jsx": "react-jsx",
     "outDir": "dist",
-    "strict": true,
-    "skipLibCheck": true
+    "jsx": "react-jsx",
+    "lib": ["dom"],
+    "moduleResolution": "node",
+    "target": "es2020"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist", "src/__tests__/**"]
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__"]
 }
