@@ -1,78 +1,109 @@
-# FIOC-React
+# @fioc/react
 
-FIOC-React (Functional Inversion Of Control - React) is a lightweight dependency injection library for React applications. It simplifies the management of dependencies in your React components by providing a flexible and type-safe way to define, register, and resolve dependencies, without the need of reflection, decorators or classes.
-
-Based on [FIOC](https://www.npmjs.com/package/fioc).
+@fioc/react is a lightweight dependency injection library for React applications, built on [@fioc/core](https://www.npmjs.com/package/@fioc/core). It provides a type-safe way to manage dependencies in React components using hooks and context providers, without requiring reflection, decorators, or classes.
 
 ## Features
 
-- **Type-Safe Dependency Injection**: Define and resolve dependencies with full TypeScript support.
-- **Non String Tokens**: Define and resolve dependencies with non-string tokens.
-- **React Integration**: Built specifically for React, with hooks and context providers.
-- **Lightweight**: Minimal overhead, designed to integrate seamlessly into your existing React projects.
-- **As Complex as You Want**: Going from just registering implementations of interfaces to registering consumers/use cases with recursive dependencies resolution.
+- 🚀 **React Integration**: Tailored for React with hooks and context providers
+- 🪶 **Lightweight**: Minimal overhead, integrates seamlessly into React projects
+- 🔗 **Ecosystem Compatible**: Works with [@fioc/core](https://www.npmjs.com/package/@fioc/core), [@fioc/strict](https://www.npmjs.com/package/@fioc/strict), and [@fioc/next](https://www.npmjs.com/package/@fioc/next)
+
+[Jump to Basic Usage →](#basic-usage)
+
+## Table of Contents
+
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+  - [Configuring Dependencies Provider](#configuring-dependencies-provider)
+  - [Resolving Dependencies](#resolving-dependencies)
+- [Related Packages](#related-packages)
 
 ## Installation
 
-Install the library using npm, pnpm or yarn:
+Install using npm, pnpm, or yarn (requires `@fioc/core`):
 
 ```bash
-npm install fioc-react
+npm install @fioc/core @fioc/react
 ```
 
 ```bash
-pnpm install fioc-react
+pnpm install @fioc/core @fioc/react
 ```
 
 ```bash
-yarn add fioc-react
+yarn add @fioc/core @fioc/react
 ```
 
-### 1. Configuring Dependencies Provider
+## Basic Usage
 
-For details of how to configure the Container Manager see [FIOC](https://www.npmjs.com/package/fioc).
-Use the `DependenciesProvider` to provide the container manager to your application:
+### Configuring Dependencies Provider
+
+Set up a container manager with `@fioc/core` or `@fioc/strict` (see [@fioc/core](https://www.npmjs.com/package/@fioc/core) for details). Wrap your app with `DependenciesProvider`:
 
 ```tsx
-import { DependenciesProvider } from "fioc-react";
-import { DIManager } from "./containers";
-
-const App = () => {
-  return (
-    <DependenciesProvider manager={DIManager}>
-      <p>API URL: {config.apiUrl}</p>
-    </DependenciesProvider>
-  );
-};
-```
-
-### 2. Resolve Dependencies
-
-Use the `useDependencies` hook to resolve dependencies in your components:
-
-```tsx
-import { useDependencies } from "fioc-react";
+// app.tsx
+import { DependenciesProvider } from "@fioc/react";
+import { buildDIContainer, buildDIManager } from "@fioc/core";
 import { ApiServiceToken } from "./interfaces/ApiService";
 
-const MyComponent = () => {
-  const apiService = useDependencies().resolve(ApiServiceToken);
+const container = buildDIContainer()
+  .register(ApiServiceToken, { getData: () => "Hello, World!" })
+  .getResult();
 
+const DIManager = buildDIManager()
+  .registerContainer(container, "default")
+  .getResult()
+  .setDefaultContainer("default");
+
+export default function App() {
   return (
-    <div>
-      <p>API URL: {apiService.getData()}</p>
-    </div>
+    <DependenciesProvider manager={DIManager}>
+      <MyComponent />
+    </DependenciesProvider>
   );
-};
+}
 ```
 
-## License
+### Resolving Dependencies
 
-This library is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
+Use the `useDependencies` hook to resolve dependencies in components:
+
+```tsx
+// components/MyComponent.tsx
+import { useDependencies } from "@fioc/react";
+import { ApiServiceToken } from "../interfaces/ApiService";
+
+export function MyComponent() {
+  const { resolve } = useDependencies();
+  const apiService = resolve(ApiServiceToken);
+
+  return <div>API Data: {apiService.getData()}</div>;
+}
+```
+
+## Best Practices
+
+- Define tokens in shared interfaces for type safety
+- Use `@fioc/strict` for compile-time validation in complex apps
+- Keep containers modular for easier testing and maintenance
+- Use with `@fioc/next` for Next.js Server Components and Actions
+
+## Related Packages
+
+- [@fioc/core](https://www.npmjs.com/package/@fioc/core): Core dependency injection library
+- [@fioc/strict](https://www.npmjs.com/package/@fioc/strict): Strict type-safe dependency injection
+- [@fioc/next](https://www.npmjs.com/package/@fioc/next): Next.js integration for Server Components and Actions
+
+[Back to Top ↑](#fiocreact)
 
 ## Contributing
 
-Contributions are welcome! Feel free to open issues or submit pull requests on [GitHub](https://github.com/kolostring/fioc-react).
+Contributions welcome! Open issues or submit pull requests on [GitHub](https://github.com/kolostring/fioc-react).
+
+## License
+
+MIT License - see the [LICENSE](./LICENSE) file for details.
 
 ## Acknowledgments
 
-Special thanks to the open-source community for inspiring this project.
+Thanks to the open-source community for inspiring this project.

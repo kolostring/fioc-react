@@ -6,7 +6,7 @@
  */
 import { useContext, useMemo } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildDIContainerManager, DIManager } from "fioc";
+import { buildDIContainerManager, DIManager } from "@fioc/core";
 
 export function useContainerManager(): DIManager {
   const ctx = useContext(DependenciesContext);

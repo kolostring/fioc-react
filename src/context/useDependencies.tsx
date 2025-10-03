@@ -8,7 +8,7 @@
  */
 import { useContext } from "react";
 import { DependenciesContext } from "./DependenciesContext";
-import { buildDIContainer, DIContainer } from "fioc";
+import { buildDIContainer, DIContainer } from "@fioc/core";
 
 export function useDependencies(containerKey?: string): DIContainer<any> {
   const ctx = useContext(DependenciesContext);
